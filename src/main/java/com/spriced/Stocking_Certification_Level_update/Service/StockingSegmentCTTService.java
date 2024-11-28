@@ -1,0 +1,16 @@
+package com.spriced.Stocking_Certification_Level_update.Service;
+
+import org.springframework.stereotype.Service;
+
+import com.spriced.Stocking_Certification_Level_update.DTO.Request.JsonRequest;
+import com.spriced.Stocking_Certification_Level_update.DTO.Response.PartResponse;
+import com.spriced.Stocking_Certification_Level_update.Exceptions.CurrentPartNumberNotFoundException;
+import com.spriced.Stocking_Certification_Level_update.Exceptions.IdDoesntExistException;
+import com.spriced.Stocking_Certification_Level_update.Exceptions.NoMatchingEccWithPartException;
+import com.spriced.Stocking_Certification_Level_update.Exceptions.NoStockingCertForPartException;
+import com.spriced.Stocking_Certification_Level_update.Exceptions.PartNotFoundException;
+
+@Service
+public interface StockingSegmentCTTService {
+	public String update(String partNumber,String productBu) throws PartNotFoundException, NoStockingCertForPartException, NoMatchingEccWithPartException, IdDoesntExistException, CurrentPartNumberNotFoundException;
+}

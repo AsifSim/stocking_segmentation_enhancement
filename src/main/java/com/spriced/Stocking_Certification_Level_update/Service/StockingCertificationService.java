@@ -6,6 +6,6 @@ import com.spriced.Stocking_Certification_Level_update.DTO.Response.PartResponse
 import org.springframework.stereotype.Service;
 
 @Service
-public interface StockingService {
+public interface StockingCertificationService {
     public PartResponse update(JsonRequest reqBody);
 }

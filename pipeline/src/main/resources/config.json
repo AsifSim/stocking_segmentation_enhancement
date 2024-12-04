@@ -1,0 +1,18 @@
+{
+  "sftp": {
+    "hostname": "106.51.91.59",
+    "port": 22,
+    "username": "cfg",
+    "privateKey": "/path/to/private/key",
+    "remotePath": "/framework/data.csv",
+    "destination": "C:\\sim\\sftp\\",
+    "fileName": "data.csv",
+    "primaryKey": "",
+    "batching": "true",
+    "ordered": "yes",
+    "business": "nrp",
+    "table": "part",
+    "batchKey": "part_number",
+    "sinkPath": "C:\\sim\\outbound"
+  }
+}

@@ -1,0 +1,11 @@
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\Application.java
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\Configuration\DataSourceConfig.java
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\Configuration\DynamicDataSource.java
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\Constants.java
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\DTO\Request\DeleteRequest.java
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\DTO\Request\InsertRequest.java
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\DTO\Request\ReadRequest.java
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\DTO\Request\UpdateRequest.java
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\DTO\Request\UpsertRequest.java
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\Model\Condition.java
+C:\Work\spriced-platform\data-persistance\src\main\java\flink\generic\db\Service\GenericQueryService.java

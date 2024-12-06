@@ -3,14 +3,11 @@ package com.spriced.Stocking_Certification_Level_update.Service.Implementation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import com.spriced.Stocking_Certification_Level_update.Exceptions.CurrentPartNumberNotFoundException;
 import com.spriced.Stocking_Certification_Level_update.Exceptions.IdDoesntExistException;
 import com.spriced.Stocking_Certification_Level_update.Exceptions.NoMatchingEccWithPartException;
@@ -18,11 +15,16 @@ import com.spriced.Stocking_Certification_Level_update.Exceptions.NoStockingCert
 import com.spriced.Stocking_Certification_Level_update.Exceptions.PartNotFoundException;
 import com.spriced.Stocking_Certification_Level_update.Service.StockingSegmentCTTService;
 import com.spriced.workflow.DataReading;
-
 import flink.generic.db.Model.Condition;
 
 @Service
 public class StockingSegmentCTTServiceImpl implements StockingSegmentCTTService{
+
+	@Value("${EQUALS}")
+	private String EQUALS;
+
+	@Value("${AND}")
+	private String AND;
 	
 	@Value("${db_name}")
     private String DB_NAME;
@@ -80,10 +82,10 @@ public class StockingSegmentCTTServiceImpl implements StockingSegmentCTTService{
 	
 	@Autowired
     DataReading genServ;
-	private static final Logger logger = LoggerFactory.getLogger(StockingCertificationServImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(StockingSegmentCTTServiceImpl.class);
 
 	@Override
-	public String update(String partNumber,String productBU) throws PartNotFoundException, NoStockingCertForPartException, NoMatchingEccWithPartException, IdDoesntExistException, CurrentPartNumberNotFoundException {
+	public String update(String partNumber, String productBU) throws PartNotFoundException, NoStockingCertForPartException, NoMatchingEccWithPartException, IdDoesntExistException, CurrentPartNumberNotFoundException {
 		logger.info("=============Inside Class {}, Function {}",this.getClass().getSimpleName(),(new Object() {}.getClass().getEnclosingMethod().getName()));
     	logger.info("Parameter(partNumber = {}, productBU = {})",partNumber,productBU);
 	    productBU = !(productBU.isEmpty()) ? productBU.trim() : "";
@@ -103,7 +105,7 @@ public class StockingSegmentCTTServiceImpl implements StockingSegmentCTTService{
 	public String checkStockingInRange(Map<String,Object> part,String partNumber) throws NoMatchingEccWithPartException, IdDoesntExistException, CurrentPartNumberNotFoundException {
 		logger.info("=============Inside Class {}, Function {}",this.getClass().getSimpleName(),(new Object() {}.getClass().getEnclosingMethod().getName()));
     	logger.info("Parameter(certification_level = {},ecc = {},business_owner = {},annual_volume = {})",part.get(CERTIFICATION_LEVEL),part.get(ECC),part.get(BUSINESS_OWNER),part.get(ANNUAL_VOLUME));
-    	List<Condition> conditions = new ArrayList<>(List.of(new Condition(ECC, getCode((Long)part.get(ECC),ECC), "=", "AND")));
+    	List<Condition> conditions = new ArrayList<>(List.of(new Condition(ECC, getCode((Long)part.get(ECC),ECC), EQUALS, AND)));
         List<String> columns = List.of(MIN_PERCENTILE,MAX_PERCENTILE,STOCKING_SEGMENT);
         logger.info("Going to execute read query from p_stock_ctt_segment entity");
         List<Map<String, Object>> stockCttSegmentList = genServ.read(P_STOCK_CTT_SEGMENT, columns, conditions, DB_NAME);
@@ -117,7 +119,7 @@ public class StockingSegmentCTTServiceImpl implements StockingSegmentCTTService{
 	public Long getVolume(String currentPartNumber) throws CurrentPartNumberNotFoundException {
 		logger.info("=============Inside Class {}, Function {}",this.getClass().getSimpleName(),(new Object() {}.getClass().getEnclosingMethod().getName()));
     	logger.info("Parameter(currentPartNumber = {})",currentPartNumber);
-    	List<Condition> conditions = new ArrayList<>(List.of(new Condition(CURRENT_PART_NUMBER, currentPartNumber, "=", "AND")));
+    	List<Condition> conditions = new ArrayList<>(List.of(new Condition(CURRENT_PART_NUMBER, currentPartNumber, EQUALS, AND)));
         List<String> columns = List.of("volume");
         logger.info("Going to execute read query from INBOUND_STOCK_NRP_MSBI_SALES_VOLUME entity");
         List<Map<String, Object>> volumeList = genServ.read(INBOUND_STOCK_NRP_MSBI_SALES_VOLUME, columns, conditions, DB_NAME);
@@ -145,7 +147,7 @@ public class StockingSegmentCTTServiceImpl implements StockingSegmentCTTService{
 	    private String getCttStockSegment(String partNumber, String productBU,Long certification_level) throws NoStockingCertForPartException, IdDoesntExistException{
 			logger.info("=============Inside Class {}, Function {}",this.getClass().getSimpleName(),(new Object() {}.getClass().getEnclosingMethod().getName()));
 	    	logger.info("Parameter(partNumber = {}, productBU = {})",partNumber,productBU);
-	        List<Condition> conditions = new ArrayList<>(List.of(new Condition(STOCKING_CERT, getCode(certification_level,XCERTIFICATION_LEVEL), "=", "AND")));
+	        List<Condition> conditions = new ArrayList<>(List.of(new Condition(STOCKING_CERT, getCode(certification_level,XCERTIFICATION_LEVEL), EQUALS, AND)));
 	        logger.info("code from X_CERTIFICATION_LEVEL = {}",conditions.get(0).getValue());
 	        List<String> columns = List.of(CTT_STOCKING_SEGMENT);
 	        logger.info("Going to execute read query from p_stock_ces_min_segment entity");
@@ -160,7 +162,7 @@ public class StockingSegmentCTTServiceImpl implements StockingSegmentCTTService{
 	    public String getCode(Long entityId, String name) throws IdDoesntExistException {
 			logger.info("=============Inside Class {}, Function {}",this.getClass().getSimpleName(),(new Object() {}.getClass().getEnclosingMethod().getName()));
 	    	logger.info("Parameter(Id = {})",entityId);
-	    	List<Condition> conditions = new ArrayList<>(List.of(new Condition(ID, entityId, "=", "AND")));
+	    	List<Condition> conditions = new ArrayList<>(List.of(new Condition(ID, entityId, EQUALS, AND)));
 	        List<String> columns = List.of(CODE);
 	        logger.info("Going to execute read query from p_stock_ces_min_segment entity");
 	        List<Map<String, Object>> fetchList = genServ.read(name, columns, conditions, DB_NAME);
@@ -174,7 +176,7 @@ public class StockingSegmentCTTServiceImpl implements StockingSegmentCTTService{
 	    public Map<String, Object> getPartDetail(String partNumber) throws PartNotFoundException {
 			logger.info("=============Inside Class {}, Function {}",this.getClass().getSimpleName(),(new Object() {}.getClass().getEnclosingMethod().getName()));
 	    	logger.info("Parameter(partNumber = {})",partNumber);
-	    	List<Condition> conditions = new ArrayList<>(List.of((new Condition(CODE, partNumber, "=", "AND"))));
+	    	List<Condition> conditions = new ArrayList<>(List.of((new Condition(CODE, partNumber, EQUALS, AND))));
 	        List<String> columns = List.of(CERTIFICATION_LEVEL,ECC,BUSINESS_OWNER,ANNUAL_VOLUME,CURRENT_PART_NUMBER);
 	        logger.info("Going to execute read query from part entity");
 	        List<Map<String, Object>> partDetailList = genServ.read(PART, columns, conditions, DB_NAME);
